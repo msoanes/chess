@@ -25,6 +25,14 @@ class Piece
     end
   end
 
+  def valid_moves
+    moves.reject do |move|
+      new_board = @board.deep_dup
+      new_board.move(@pos, move)
+      new_board.in_check?(@color)
+    end
+  end
+
   def valid_position?(position)
     return false unless position.all? { |coord| coord.between?(0,7) }
 
