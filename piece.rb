@@ -35,8 +35,8 @@ class Piece
 
   def valid_position?(position)
     return false unless position.all? { |coord| coord.between?(0,7) }
-
     return true unless @board.occupied?(position)
+
     @color != @board.piece_at(position).color
   end
 end

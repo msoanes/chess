@@ -26,16 +26,15 @@ class Board
 
   def move(start_pos, end_pos)
     piece = piece_at(start_pos)
-    if piece.valid_moves.include?(end_pos)
-      self[start_pos] = nil
-      self[end_pos] = piece
-    else
-      raise "Invalid move"
-    end
+    raise "Invalid move" unless piece.valid_moves.include?(end_pos)
+    self[start_pos] = nil
+    self[end_pos] = piece
   end
 
   def checkmate?(color)
-
+    in_check?(color) && get_pieces_of(color).any? do |piece|
+      piece.valid_moves.length > 0
+    end
   end
 
   def in_check?(color)
@@ -44,9 +43,7 @@ class Board
 
     king_pos = our_pieces.select { |piece| piece.is_a?(King) }[0].pos
 
-    other_pieces.any? do |piece|
-      piece.moves.include?(king_pos)
-    end
+    other_pieces.any? { |piece| piece.moves.include?(king_pos) }
   end
 
   def get_pieces_of(color)
