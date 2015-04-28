@@ -1,8 +1,7 @@
 require_relative 'piece'
 
 class SlidingPiece < Piece
-  STRAIGHT = [[1, 0], [0, 1], [-1, 0], [0, -1]]
-  DIAGONAL = [[1, 1], [1, -1], [-1, 1], [-1, -1]]
+  
 
   def moves
     moves_array = []
@@ -22,7 +21,6 @@ class SlidingPiece < Piece
 
     moves_array
   end
-
 end
 
 class Queen < SlidingPiece
