@@ -24,10 +24,18 @@ class Knight < SteppingPiece
   def hops
     HOPS
   end
+
+  def symbol
+    'N'
+  end
 end
 
 class King < SteppingPiece
   def hops
     STRAIGHT + DIAGONAL
+  end
+
+  def symbol
+    'K'
   end
 end

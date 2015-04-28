@@ -1,5 +1,5 @@
 class Piece
-  attr_reader :color
+  attr_reader :color # :pos, :moved, :board
 
   STRAIGHT = [[1, 0], [0, 1], [-1, 0], [0, -1]]
   DIAGONAL = [[1, 1], [1, -1], [-1, 1], [-1, -1]]
@@ -8,9 +8,14 @@ class Piece
     @board = board
     @pos = pos
     @color = color
+    @moved = false
   end
 
   def moves
+    raise "Not yet implemented"
+  end
+
+  def symbol
     raise "Not yet implemented"
   end
 
