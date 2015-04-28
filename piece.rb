@@ -1,5 +1,5 @@
 class Piece
-  attr_reader :color # :pos, :moved, :board
+  attr_reader :color, :pos #, :moved, :board
 
   STRAIGHT = [[1, 0], [0, 1], [-1, 0], [0, -1]]
   DIAGONAL = [[1, 1], [1, -1], [-1, 1], [-1, -1]]
