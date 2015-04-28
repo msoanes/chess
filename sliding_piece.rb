@@ -1,8 +1,6 @@
 require_relative 'piece'
 
 class SlidingPiece < Piece
-
-
   def moves
     moves_array = []
     move_dirs.each do |direction|
