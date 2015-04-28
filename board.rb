@@ -1,6 +1,10 @@
-require_relative 'piece'
+require_relative 'stepping_piece'
+require_relative 'sliding_piece'
+require_relative 'pawn'
 
 class Board
+  LAYOUT = [Rook, Knight, Bishop, Queen, King, Bishop, Knight, Rook]
+
   attr_reader :pieces, :grid
 
   def initialize
@@ -14,6 +18,16 @@ class Board
   end
 
   def set_up_pieces
+    8.times do |column|
+      @pieces << Pawn.new(self, [1, column], :black)
+      @pieces << Pawn.new(self, [6, column], :white)
+      @pieces << LAYOUT[column].new(self, [0, column], :black)
+      @pieces << LAYOUT[column].new(self, [7, column], :white)
+    end
+
+    @pieces.each do |piece|
+      self[piece.pos] = piece
+    end
   end
 
   def occupied?(pos)
@@ -29,6 +43,7 @@ class Board
     raise "Invalid move" unless piece.valid_moves.include?(end_pos)
     self[start_pos] = nil
     self[end_pos] = piece
+    piece.pos = end_pos
   end
 
   def checkmate?(color)
