@@ -11,6 +11,12 @@ class Piece
     raise "Not yet implemented"
   end
 
+  def single_step(position, dir)
+    position.map.with_index do |coordinate, idx|
+      coordinate + dir[idx]
+    end
+  end
+
   def valid_position?(position)
     return false unless position.all? { |coord| coord.between?(0,7) }
 

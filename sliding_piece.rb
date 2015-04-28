@@ -14,20 +14,15 @@ class SlidingPiece < Piece
 
   def slide(dir)
     moves_array
-    new_position = slide_once(@pos, dir)
+    new_position = single_step(@pos, dir)
     while valid_position?(new_position)
       moves_array << new_position
-      new_position = slide_once(new_position, dir)
+      new_position = single_step(new_position, dir)
     end
 
     moves_array
   end
 
-  def slide_once(position, dir)
-    position.map.with_index do |coordinate, idx|
-      coordinate + dir[idx]
-    end
-  end
 end
 
 class Queen < SlidingPiece
