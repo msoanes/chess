@@ -90,15 +90,17 @@ class Board
 
   def render
     grid.each_with_index do |row, row_idx|
-      row_mapped = row.map.with_index do |el, col_idx|
-        sym = el.nil? ? '  ' : el.to_s
-        symbol_background = row_idx % 2 == col_idx % 2 ? :white : :black
-        sym.send("on_#{symbol_background}")
+      formatted_row = row.map.with_index do |col, col_idx|
+        sym = col.nil? ? '  ' : col.to_s
+        sym.send("on_#{square_color(row_idx, col_idx)}")
       end
-      puts "#{8-row_idx} #{row_mapped.join('')}"
+      puts "#{8-row_idx} #{formatted_row.join}"
     end
-
     puts "  #{('a'..'h').to_a.join(' ')}"
+  end
+
+  def square_color(row, col)
+    row % 2 == col % 2 ? :white : :black
   end
 
   def pieces

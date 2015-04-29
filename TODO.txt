@@ -1,4 +1,4 @@
-* Refactor uglier methods (Pawn#moves, Board#render)
+* Refactor uglier methods (Pawn#moves)
 * HumanPlayer#display_info
 * Saving/loading
 * Exiting
