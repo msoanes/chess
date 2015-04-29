@@ -1,6 +1,7 @@
 require_relative 'errors'
 
 class HumanPlayer
+  attr_reader :color
   def initialize(board, color)
     @board = board
     @color = color
@@ -8,27 +9,20 @@ class HumanPlayer
 
   def make_move
     begin
-      @board.render
-      display_info
       move = get_input
-      @board.move(*move)
     rescue InvalidInputError => e
       puts e.message
       retry
     end
   end
 
-  def get_input
+  def get_move
     print "> "
-    pair = gets.chomp.split.map { |coord| input_to_coordinate(coord) }
-
-    if !@board.occupied?(pair.first)
-      raise InvalidInputError.new("Must select a piece at starting position.")
-    elsif @board.color_at(pair.first) != @color
-      raise InvalidInputError.new("Cannot move other player's pieces")
+    input = gets.chomp
+    if input =~ /^[a-h][1-8] [a-h][1-8]$/
+      return input.split.map { |coord| input_to_coordinate(coord) }
     end
-
-    pair
+    input.to_sym
   end
 
   def input_to_coordinate(code)
@@ -36,15 +30,10 @@ class HumanPlayer
     row = 8 - number.to_i
     col = ('a'..'h').to_a.index(letter)
 
-    if [col, row].any? { |coord| coord.nil? || !coord.between?(0, 7) }
+    if [row, col].any? { |coord| coord.nil? || !coord.between?(0, 7) }
       raise InvalidInputError.new("Invalid coordinates")
     end
-  end
 
-  def display_info
-    puts "Black in check" if @board.in_check?(:black)
-    puts "White in check" if @board.in_check?(:white)
-    puts "Current player: #{@color.capitalize}"
-    puts "Enter start and end coordinates (e.g. 'b1 c3')"
+    [row, col]
   end
 end
