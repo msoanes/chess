@@ -39,18 +39,24 @@ class Board
   end
 
   def move(start_pos, end_pos)
-    piece = piece_at(start_pos)
-    if piece.nil? || !piece.valid_moves.include?(end_pos)
-      raise "Invalid move"
+    set_piece_at(start_pos, end_pos) do |piece|
+      if piece.nil? || !piece.valid_moves.include?(end_pos)
+        raise "Invalid move"
+      end
     end
 
-    self[start_pos] = nil
-    self[end_pos] = piece
-    piece.pos = end_pos
   end
 
-  def set_piece_at(start_pos, end_pos)
+  def set_piece_at(start_pos, end_pos, &prc)
     piece = piece_at(start_pos)
+
+    if occupied?(end_pos)
+      taken_piece = piece_at(end_pos)
+      @pieces.delete(taken_piece)
+    end
+
+    prc.call(piece) unless prc.nil?
+
     self[start_pos] = nil
     self[end_pos] = piece
     piece.pos = end_pos
@@ -78,7 +84,7 @@ class Board
   def deep_dup
     new_board = Board.new
     @pieces.each do |piece|
-      new_piece = piece.class.new(new_board, piece.pos, piece.color)
+      new_piece = piece.class.new(new_board, piece.pos.dup, piece.color)
       new_board[piece.pos] = new_piece
       new_board.pieces << new_piece
     end
@@ -98,16 +104,40 @@ class Board
   end
 end
 
+def t(code)
+  letter, number = code.split('')
+  number = 8 - number.to_i
+  letter = ('a'..'h').to_a.index(letter)
+  [number, letter]
+end
+
 board = Board.new
 board.set_up_pieces
-board.render
-board.move([1,0],[2,0])
 puts
 board.render
+board.move(t('f2'), t('f4'))
+puts
+board.render
+board.move(t('e7'), t('e5'))
+puts
+board.render
+board.move(t('g2'), t('g4'))
+puts
+board.render
+board.move(t('b7'), t('b6'))
+puts
+board.render
+board.move(t('g1'), t('f3'))
+puts
+board.render
+board.move(t('d8'), t('h4'))
+puts
+board.render
+puts
+# board.move(t('f3'), t('h4'))
+# puts
+# board.render
 
-# def t(code)
-#   letter, number = code.split('')
-#   number = 8 - number.to_i
-#   letter = ('a'..'h').to_a.index(letter)
-#   [number, letter]
-# end
+
+puts "White in checkmate: #{board.checkmate?(:white)}"
+puts "Black in checkmate: #{board.checkmate?(:black)}"
