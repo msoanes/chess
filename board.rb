@@ -57,9 +57,7 @@ class Board
   end
 
   def checkmate?(color)
-    in_check?(color) && get_pieces_of(color).all? do |piece|
-      piece.valid_moves.empty?
-    end
+    in_check?(color) && no_valid_moves?(color)
   end
 
   def in_check?(color)
@@ -86,17 +84,25 @@ class Board
     new_board
   end
 
-  def render
-    grid.each do |row|
-      row_mapped = row.map do |el|
-        if el.nil?
-          ' '
-        else
-          el
-        end
-      end
-      puts row_mapped.join(' ')
+  def no_valid_moves?(color)
+    get_pieces_of(color).all? do |piece|
+      piece.valid_moves.empty?
     end
+  end
+
+  def render
+    grid.each_with_index do |row, y|
+      row_mapped = row.map.with_index do |el, x|
+        char = el.nil? ? ' ' : el.to_s
+        char += ' '
+      end
+      puts row_mapped.join('')
+    end
+  end
+
+  def winner
+    return :black if checkmate?(:white)
+    return :white if checkmate?(:black)
   end
 end
 

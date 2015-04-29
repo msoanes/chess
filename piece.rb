@@ -54,4 +54,7 @@ class Piece
     return "#{symbol}".red if @color == :black
     symbol
   end
+
+  def symbol(sym_1, sym_2)
+  end
 end
