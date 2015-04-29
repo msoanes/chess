@@ -2,7 +2,7 @@ require 'colorize'
 
 class Piece
   attr_accessor :pos, :moved
-  attr_reader :color  #:moved, :board
+  attr_reader :color
 
   STRAIGHT = [[1, 0], [0, 1], [-1, 0], [0, -1]]
   DIAGONAL = [[1, 1], [1, -1], [-1, 1], [-1, -1]]
