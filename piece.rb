@@ -40,7 +40,7 @@ class Piece
     return false unless position.all? { |coord| coord.between?(0,7) }
     return true unless @board.occupied?(position)
 
-    @color != @board.piece_at(position).color
+    @color != @board.color_at(position)
   end
 
   def inspect

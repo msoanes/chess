@@ -17,7 +17,7 @@ class Pawn < Piece
   end
 
   def valid_diagonal?(move)
-    @board.occupied?(move) && @board.piece_at(move).color != @color
+    @board.occupied?(move) && @board.color_at(move) != @color
   end
 
   def symbol

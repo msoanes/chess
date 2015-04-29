@@ -21,10 +21,9 @@ class HumanPlayer
   def get_input
     print "> "
     pair = gets.chomp.split.map { |coord| input_to_coordinate(coord) }
-    unless @board.occupied?(pair.first)
+    if !@board.occupied?(pair.first)
       raise InvalidInputError.new("Must select a piece at starting position.")
-    end
-    unless @board.piece_at(pair.first).color == @color
+    elsif @board.color_at(pair.first) != @color
       raise InvalidInputError.new("Cannot move other player's pieces")
     end
     pair
