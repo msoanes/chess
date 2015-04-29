@@ -1,7 +1,7 @@
 require 'colorize'
 
 class Piece
-  attr_accessor :pos
+  attr_accessor :pos, :moved
   attr_reader :color  #:moved, :board
 
   STRAIGHT = [[1, 0], [0, 1], [-1, 0], [0, -1]]
@@ -32,8 +32,6 @@ class Piece
     moves.reject do |move|
       new_board = @board.deep_dup
       new_board.set_piece_at(@pos, move)
-      # new_board.render
-
       new_board.in_check?(@color)
     end
   end

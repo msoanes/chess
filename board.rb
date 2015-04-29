@@ -65,6 +65,7 @@ class Board
     self[start_pos] = nil
     self[end_pos] = piece
     piece.pos = end_pos
+    piece.moved = true
   end
 
   def stalemate?
