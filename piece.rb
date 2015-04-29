@@ -51,7 +51,7 @@ class Piece
   end
 
   def to_s
-    return "#{symbol}".red if @color == :black
-    symbol
+    symbol_color = :white == color ? :blue : :red
+    symbol.send(symbol_color)
   end
 end

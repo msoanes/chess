@@ -26,7 +26,7 @@ class Knight < SteppingPiece
   end
 
   def symbol
-    'N'
+    '♞ '
   end
 end
 
@@ -36,6 +36,6 @@ class King < SteppingPiece
   end
 
   def symbol
-    'K'
+    '♚ '
   end
 end

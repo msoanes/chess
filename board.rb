@@ -87,18 +87,23 @@ class Board
   end
 
   def render
-    grid.each do |row|
-      row_mapped = row.map do |el|
-        if el.nil?
-          ' '
-        else
-          el
-        end
+    grid.each_with_index do |row, row_idx|
+      row_mapped = row.map.with_index do |el, col_idx|
+        sym = el.nil? ? '  ' : el.to_s
+        symbol_background = row_idx % 2 == col_idx % 2 ? :white : :black
+        sym.send("on_#{symbol_background}")
       end
-      puts row_mapped.join(' ')
+      puts row_mapped.join('')
     end
   end
 end
+
+board = Board.new
+board.set_up_pieces
+board.render
+board.move([1,0],[2,0])
+puts
+board.render
 
 # def t(code)
 #   letter, number = code.split('')

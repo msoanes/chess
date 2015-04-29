@@ -21,6 +21,6 @@ class Pawn < Piece
   end
 
   def symbol
-    'P'
+    '♟ '
   end
 end

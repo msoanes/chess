@@ -30,7 +30,7 @@ class Queen < SlidingPiece
   end
 
   def symbol
-    'Q'
+    '♛ '
   end
 end
 
@@ -40,7 +40,7 @@ class Bishop < SlidingPiece
   end
 
   def symbol
-    'B'
+    '♝ '
   end
 end
 
@@ -50,6 +50,6 @@ class Rook < SlidingPiece
   end
 
   def symbol
-    'R'
+    '♜ '
   end
 end
