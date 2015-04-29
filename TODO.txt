@@ -1,4 +1,3 @@
-* HumanPlayer#display_info
 * Saving/loading
 * Exiting
 * Castling

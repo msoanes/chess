@@ -42,6 +42,8 @@ class HumanPlayer
   end
 
   def display_info
-    puts "You're on your own."
+    puts "Black in check" if @board.in_check?(:black)
+    puts "White in check" if @board.in_check?(:white)
+    puts "Current player: #{@color.capitalize}"
   end
 end
