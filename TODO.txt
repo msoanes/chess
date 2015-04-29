@@ -1,8 +1,3 @@
-* Saving/loading
-* Exiting
 * Castling
 * En passant
-* Alphabetize methods
-* Privatize methods
-*
 * Cursor interface

@@ -7,15 +7,6 @@ class HumanPlayer
     @color = color
   end
 
-  def make_move
-    begin
-      move = get_input
-    rescue InvalidInputError => e
-      puts e.message
-      retry
-    end
-  end
-
   def get_move
     print "> "
     input = gets.chomp
@@ -25,6 +16,9 @@ class HumanPlayer
     input.to_sym
   end
 
+
+  private
+  
   def input_to_coordinate(code)
     letter, number = code.split('')
     row = 8 - number.to_i

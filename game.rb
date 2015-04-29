@@ -18,7 +18,7 @@ class Game
     @quit = false
     until @board.over? || @quit
       begin
-        @board.render # show me the board
+        @board.render
         display_info
         action = @mover.get_move
         if SPECIALS.include?(action)
@@ -26,8 +26,6 @@ class Game
         elsif valid_coords?(action)
           @board.move(*action)
           switch_player
-        else
-          puts "what"
         end
       rescue InvalidInputError => e
         puts e.message
@@ -37,18 +35,8 @@ class Game
     exit_game
   end
 
-  def quit
-    @quit = true
-  end
 
-  def exit_game
-    if @board.over?
-      File.delete(SAVE_FILE) if File.exist?(SAVE_FILE)
-      puts "Congratulations, #{@board.winner.capitalize}!"
-    else
-      puts "Quitter"
-    end
-  end
+  private
 
   def display_info
     puts "Black in check" if @board.in_check?(:black)
@@ -58,8 +46,18 @@ class Game
     puts "Enter start and end coordinates (e.g. 'b1 c3')"
   end
 
-  def switch_player
-    @mover = (@mover == @player_one ? @player_two : @player_one)
+  def exit_game
+    if @board.over?
+      @board.render
+      File.delete(SAVE_FILE) if File.exist?(SAVE_FILE)
+      puts "Congratulations, #{@board.winner.capitalize}!"
+    else
+      puts "Quitter"
+    end
+  end
+
+  def quit
+    @quit = true
   end
 
   def save
@@ -67,8 +65,14 @@ class Game
     puts "Game saved."
   end
 
+  def switch_player
+    @mover = (@mover == @player_one ? @player_two : @player_one)
+  end
+
   def valid_coords?(coords)
-    if !@board.occupied?(coords.first)
+    if !coords.is_a?(Array)
+      raise InvalidInputError.new("Follow the coordinate example, please")
+    elsif !@board.occupied?(coords.first)
       raise InvalidInputError.new("Must select a piece at starting position.")
     elsif @board.color_at(coords.first) != @mover.color
       raise InvalidInputError.new("Cannot move other player's pieces")
