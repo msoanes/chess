@@ -6,7 +6,7 @@ require_relative 'errors'
 class Board
   LAYOUT = [Rook, Knight, Bishop, Queen, King, Bishop, Knight, Rook]
 
-  attr_reader :pieces, :grid
+  attr_reader :grid
 
   def initialize
     @grid = Array.new(8) { Array.new(8) }
@@ -57,13 +57,15 @@ class Board
   end
 
   def stalemate?
-    pieces.all? { |piece| piece.valid_moves.empty? }
+    no_valid_moves?(:black) || no_valid_moves?(:white)
   end
 
   def checkmate?(color)
-    in_check?(color) && get_pieces_of(color).all? do |piece|
-      piece.valid_moves.empty?
-    end
+    in_check?(color) && no_valid_moves?(color)
+  end
+
+  def no_valid_moves?(color)
+    get_pieces_of(color).all? { |piece| piece.valid_moves.empty? }
   end
 
   def in_check?(color)
@@ -77,12 +79,17 @@ class Board
     pieces.select { |piece| piece.color == color }
   end
 
+  def winner
+    return :white if checkmate?(:black)
+    return :black if checkmate?(:white)
+    :nobody
+  end
+
   def deep_dup
     new_board = Board.new
     pieces.each do |piece|
       new_piece = piece.class.new(new_board, piece.pos.dup, piece.color)
       new_board[piece.pos] = new_piece
-      new_board.pieces << new_piece
     end
 
     new_board
@@ -108,6 +115,8 @@ class Board
   end
 
   def color_at(pos)
-    piece_at(pos).color
+    piece_at(pos).color if occupied?(pos)
   end
+
+
 end
