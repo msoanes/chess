@@ -45,5 +45,6 @@ class HumanPlayer
     puts "Black in check" if @board.in_check?(:black)
     puts "White in check" if @board.in_check?(:white)
     puts "Current player: #{@color.capitalize}"
+    puts "Enter start and end coordinates (e.g. 'b1 c3')"
   end
 end
