@@ -9,9 +9,7 @@ class Board
   attr_reader :pieces, :grid
 
   def initialize
-    @pieces = []
     @grid = Array.new(8) { Array.new(8) }
-    # set_up_pieces
   end
 
   def []=(pos, piece)
@@ -20,14 +18,10 @@ class Board
 
   def set_up_pieces
     8.times do |column|
-      @pieces << Pawn.new(self, [1, column], :black)
-      @pieces << Pawn.new(self, [6, column], :white)
-      @pieces << LAYOUT[column].new(self, [0, column], :black)
-      @pieces << LAYOUT[column].new(self, [7, column], :white)
-    end
-
-    @pieces.each do |piece|
-      self[piece.pos] = piece
+      self[[1, column]] = Pawn.new(self, [1, column], :black)
+      self[[6, column]] = Pawn.new(self, [6, column], :white)
+      self[[0, column]] = LAYOUT[column].new(self, [0, column], :black)
+      self[[7, column]] = LAYOUT[column].new(self, [7, column], :white)
     end
   end
 
@@ -45,8 +39,9 @@ class Board
 
   def move(start_pos, end_pos)
     set_piece_at(start_pos, end_pos) do |piece|
-      raise InvalidMoveError.new("No piece in starting position") if piece.nil?
-      unless piece.valid_moves.include?(end_pos)
+      if piece.nil?
+        raise InvalidMoveError.new("No piece in starting position")
+      elsif !piece.valid_moves.include?(end_pos)
         raise InvalidMoveError.new("That piece can't move there")
       end
     end
@@ -55,21 +50,14 @@ class Board
   def set_piece_at(start_pos, end_pos, &prc)
     piece = piece_at(start_pos)
 
-    if occupied?(end_pos)
-      taken_piece = piece_at(end_pos)
-      @pieces.delete(taken_piece)
-    end
-
     prc.call(piece) unless prc.nil?
 
-    self[start_pos] = nil
-    self[end_pos] = piece
-    piece.pos = end_pos
-    piece.moved = true
+    self[start_pos], self[end_pos] = nil, piece
+    piece.pos, piece.moved = end_pos, true
   end
 
   def stalemate?
-    @pieces.all? { |piece| piece.valid_moves.empty? }
+    pieces.all? { |piece| piece.valid_moves.empty? }
   end
 
   def checkmate?(color)
@@ -79,21 +67,19 @@ class Board
   end
 
   def in_check?(color)
-    king_pos = @pieces.select do |piece|
-      piece.is_a?(King) && piece.color == color
-    end[0].pos
+    king = pieces.find { |piece| piece.is_a?(King) && piece.color == color }
     get_pieces_of(:white == color ? :black : :white).any? do |piece|
-      piece.moves.include?(king_pos)
+      piece.moves.include?(king.pos)
     end
   end
 
   def get_pieces_of(color)
-    @pieces.select { |piece| piece.color == color }
+    pieces.select { |piece| piece.color == color }
   end
 
   def deep_dup
     new_board = Board.new
-    @pieces.each do |piece|
+    pieces.each do |piece|
       new_piece = piece.class.new(new_board, piece.pos.dup, piece.color)
       new_board[piece.pos] = new_piece
       new_board.pieces << new_piece
@@ -113,5 +99,9 @@ class Board
     end
 
     puts "  #{('a'..'h').to_a.join(' ')}"
+  end
+
+  def pieces
+    @grid.flatten.compact
   end
 end
