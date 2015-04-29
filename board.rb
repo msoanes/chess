@@ -34,6 +34,10 @@ class Board
     !!piece_at(pos)
   end
 
+  def over?
+    checkmate?(:white) || checkmate(:black) || stalemate?
+  end
+
   def piece_at(pos)
     @grid[pos.first][pos.last]
   end
@@ -60,6 +64,10 @@ class Board
     self[start_pos] = nil
     self[end_pos] = piece
     piece.pos = end_pos
+  end
+
+  def stalemate?
+    @pieces.all? { |piece| piece.valid_moves.empty? }
   end
 
   def checkmate?(color)
@@ -110,34 +118,3 @@ def t(code)
   letter = ('a'..'h').to_a.index(letter)
   [number, letter]
 end
-
-board = Board.new
-board.set_up_pieces
-puts
-board.render
-board.move(t('f2'), t('f4'))
-puts
-board.render
-board.move(t('e7'), t('e5'))
-puts
-board.render
-board.move(t('g2'), t('g4'))
-puts
-board.render
-board.move(t('b7'), t('b6'))
-puts
-board.render
-board.move(t('g1'), t('f3'))
-puts
-board.render
-board.move(t('d8'), t('h4'))
-puts
-board.render
-puts
-# board.move(t('f3'), t('h4'))
-# puts
-# board.render
-
-
-puts "White in checkmate: #{board.checkmate?(:white)}"
-puts "Black in checkmate: #{board.checkmate?(:black)}"
