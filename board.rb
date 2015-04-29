@@ -1,6 +1,7 @@
 require_relative 'stepping_piece'
 require_relative 'sliding_piece'
 require_relative 'pawn'
+require_relative 'errors'
 
 class Board
   LAYOUT = [Rook, Knight, Bishop, Queen, King, Bishop, Knight, Rook]
@@ -35,7 +36,7 @@ class Board
   end
 
   def over?
-    checkmate?(:white) || checkmate(:black) || stalemate?
+    checkmate?(:white) || checkmate?(:black) || stalemate?
   end
 
   def piece_at(pos)
@@ -44,11 +45,11 @@ class Board
 
   def move(start_pos, end_pos)
     set_piece_at(start_pos, end_pos) do |piece|
-      if piece.nil? || !piece.valid_moves.include?(end_pos)
-        raise "Invalid move"
+      raise InvalidMoveError.new("No piece in starting position") if piece.nil?
+      unless piece.valid_moves.include?(end_pos)
+        raise InvalidMoveError.new("That piece can't move there")
       end
     end
-
   end
 
   def set_piece_at(start_pos, end_pos, &prc)
@@ -107,14 +108,9 @@ class Board
         symbol_background = row_idx % 2 == col_idx % 2 ? :white : :black
         sym.send("on_#{symbol_background}")
       end
-      puts row_mapped.join('')
+      puts "#{8-row_idx} #{row_mapped.join('')}"
     end
-  end
-end
 
-def t(code)
-  letter, number = code.split('')
-  number = 8 - number.to_i
-  letter = ('a'..'h').to_a.index(letter)
-  [number, letter]
+    puts "  #{('a'..'h').to_a.join(' ')}"
+  end
 end
