@@ -104,4 +104,8 @@ class Board
   def pieces
     @grid.flatten.compact
   end
+
+  def color_at(pos)
+    piece_at(pos).color
+  end
 end
