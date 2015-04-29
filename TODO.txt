@@ -1,4 +1,5 @@
 * Refactor uglier methods (Pawn#moves, Board#render)
+* HumanPlayer#display_info
 * Saving/loading
 * Exiting
 * Castling
