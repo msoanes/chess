@@ -9,7 +9,7 @@ class Board
 
   def initialize
     @pieces = []
-    @grid = Array.new { Array.new(8) }
+    @grid = Array.new(8) { Array.new(8) }
     # set_up_pieces
   end
 
@@ -40,25 +40,35 @@ class Board
 
   def move(start_pos, end_pos)
     piece = piece_at(start_pos)
-    raise "Invalid move" unless piece.valid_moves.include?(end_pos)
+    if piece.nil? || !piece.valid_moves.include?(end_pos)
+      raise "Invalid move"
+    end
+
+    self[start_pos] = nil
+    self[end_pos] = piece
+    piece.pos = end_pos
+  end
+
+  def set_piece_at(start_pos, end_pos)
+    piece = piece_at(start_pos)
     self[start_pos] = nil
     self[end_pos] = piece
     piece.pos = end_pos
   end
 
   def checkmate?(color)
-    in_check?(color) && get_pieces_of(color).any? do |piece|
-      piece.valid_moves.length > 0
+    in_check?(color) && get_pieces_of(color).all? do |piece|
+      piece.valid_moves.empty?
     end
   end
 
   def in_check?(color)
-    our_pieces = get_pieces_of(color)
-    other_pieces = @pieces - our_pieces
-
-    king_pos = our_pieces.select { |piece| piece.is_a?(King) }[0].pos
-
-    other_pieces.any? { |piece| piece.moves.include?(king_pos) }
+    king_pos = @pieces.select do |piece|
+      piece.is_a?(King) && piece.color == color
+    end[0].pos
+    get_pieces_of(:white == color ? :black : :white).any? do |piece|
+      piece.moves.include?(king_pos)
+    end
   end
 
   def get_pieces_of(color)
@@ -68,11 +78,31 @@ class Board
   def deep_dup
     new_board = Board.new
     @pieces.each do |piece|
-      new_piece = Piece.new(new_board, piece.pos, piece.color)
+      new_piece = piece.class.new(new_board, piece.pos, piece.color)
       new_board[piece.pos] = new_piece
       new_board.pieces << new_piece
     end
 
     new_board
   end
+
+  def render
+    grid.each do |row|
+      row_mapped = row.map do |el|
+        if el.nil?
+          ' '
+        else
+          el
+        end
+      end
+      puts row_mapped.join(' ')
+    end
+  end
 end
+
+# def t(code)
+#   letter, number = code.split('')
+#   number = 8 - number.to_i
+#   letter = ('a'..'h').to_a.index(letter)
+#   [number, letter]
+# end

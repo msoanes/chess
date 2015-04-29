@@ -10,11 +10,14 @@ class SlidingPiece < Piece
   end
 
   def slide(dir)
-    moves_array
+    moves_array = []
     new_position = single_step(@pos, dir)
+
     while valid_position?(new_position)
       moves_array << new_position
+      prev_position = new_position
       new_position = single_step(new_position, dir)
+      break if @board.occupied?(prev_position)
     end
 
     moves_array
