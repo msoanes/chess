@@ -15,6 +15,27 @@ class Board
     @grid[pos.first][pos.last] = piece
   end
 
+  def castle(color, options = {kingside: true})
+    king = pieces.find { |piece| piece.is_a?(King) && piece.color == color }
+
+    rook_row = color == :white ? 7 : 0
+    rook_col = options[:kingside] ? 7 : 0
+
+    rook = piece_at([rook_row, rook_col])
+
+    old_king_pos = king.pos
+    old_rook_pos = [rook_row, rook_col]
+
+    new_king_pos = [old_king_pos.first, old_king_pos.last + options[:kingside] ? 2 : -2]
+    new_rook_pos = [old_king_pos.first, old_king_pos.last + options[:kingside] ? 1 : -1]
+    if can_castle?(king, rook)
+      self[new_king_pos] = king
+      self[new_rook_pos] = rook
+      king.pos = new_king_pos
+      rook.pos = new_rook_pos
+    end
+  end
+
   def checkmate?(color)
     in_check?(color) && no_valid_moves?(color)
   end
@@ -111,7 +132,7 @@ class Board
   end
 
   def square_color(row, col)
-    row % 2 == col % 2 ? :white : :black
+    row % 2 == col % 2 ? :light_white : :white
   end
 
   def stalemate?
