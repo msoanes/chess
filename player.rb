@@ -13,12 +13,12 @@ class HumanPlayer
     if input =~ /^[a-h][1-8] [a-h][1-8]$/
       return input.split.map { |coord| input_to_coordinate(coord) }
     end
-    input.to_sym
+    input.split.map(&:to_sym)
   end
 
 
   private
-  
+
   def input_to_coordinate(code)
     letter, number = code.split('')
     row = 8 - number.to_i
