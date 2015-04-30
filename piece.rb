@@ -20,7 +20,7 @@ class Piece
   end
 
   def to_s
-    symbol_color = :white == color ? :blue : :red
+    symbol_color = :white == color ? :blue : :light_red
     symbol.send(symbol_color)
   end
 
