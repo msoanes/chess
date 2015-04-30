@@ -119,6 +119,21 @@ class Board
 
   private
 
+  def can_castle?(king, rook)
+    # king and rook unmoved
+    # spaces empty between king and rook
+    # spaces between old king pos and new king pos are not in check
+
+    cannot_castle = king.moved || rook.moved
+    cannot_castle ||= spaces_filled_between?(king.pos, rook.pos)
+    cannot_castle ||= moving_through_check(king.pos)
+
+    if cannot_castle
+      raise InvalidMoveError.new("Castling unavailable")
+    end
+    true
+  end
+
   def get_pieces_of(color)
     pieces.select { |piece| piece.color == color }
   end
