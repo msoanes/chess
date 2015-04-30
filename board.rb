@@ -16,18 +16,21 @@ class Board
   end
 
   def castle(color, options = {kingside: true})
-    king = pieces.find { |piece| piece.is_a?(King) && piece.color == color }
+    # king = pieces.find { |piece| piece.is_a?(King) && piece.color == color }
 
-    rook_row = color == :white ? 7 : 0
+    base_row = color == :white ? 7 : 0
     rook_col = options[:kingside] ? 7 : 0
+    king_col = 4
 
-    rook = piece_at([rook_row, rook_col])
+    king = piece_at([base_row, king_col])
+    rook = piece_at([base_row, rook_col])
 
     old_king_pos = king.pos
-    old_rook_pos = [rook_row, rook_col]
+    old_rook_pos = [base_row, rook_col]
 
-    new_king_pos = [old_king_pos.first, old_king_pos.last + options[:kingside] ? 2 : -2]
-    new_rook_pos = [old_king_pos.first, old_king_pos.last + options[:kingside] ? 1 : -1]
+    new_king_pos = [old_king_pos.first, old_king_pos.last + (options[:kingside] ? 2 : -2)]
+    new_rook_pos = [old_king_pos.first, old_king_pos.last + (options[:kingside] ? 1 : -1)]
+
     if can_castle?(king, rook)
       self[new_king_pos] = king
       self[new_rook_pos] = rook
@@ -69,6 +72,12 @@ class Board
         raise InvalidMoveError.new("That piece can't move there")
       end
     end
+  end
+
+  def move_to_check?(start_pos, end_pos, color)
+    new_board = deep_dup
+    new_board.set_piece_at(start_pos, end_pos)
+    new_board.in_check?(color)
   end
 
   def occupied?(pos)
@@ -120,17 +129,16 @@ class Board
   private
 
   def can_castle?(king, rook)
-    # king and rook unmoved
-    # spaces empty between king and rook
-    # spaces between old king pos and new king pos are not in check
+    dir = rook.pos[1] > king.pos[1] ? 1 : -1
 
     cannot_castle = king.moved || rook.moved
     cannot_castle ||= spaces_filled_between?(king.pos, rook.pos)
-    cannot_castle ||= moving_through_check(king.pos)
+    cannot_castle ||= moving_through_check?(king, dir)
 
     if cannot_castle
       raise InvalidMoveError.new("Castling unavailable")
     end
+
     true
   end
 
@@ -142,12 +150,25 @@ class Board
     get_pieces_of(color).all? { |piece| piece.valid_moves.empty? }
   end
 
+  def moving_through_check?(king, dir)
+    1.upto(3) do |distance|
+      end_pos  = [king.pos[0], king.pos[1] + dir * distance]
+      return true if move_to_check?(king.pos, end_pos, king.color)
+    end
+    false
+  end
+
   def pieces
     @grid.flatten.compact
   end
 
+  def spaces_filled_between?(start_pos, end_pos)
+    endpoints = [start_pos, end_pos].sort
+    ((endpoints.first.first + 1)...endpoints.last.first).any? { |col| occupied?([start_pos.first, col]) }
+  end
+
   def square_color(row, col)
-    row % 2 == col % 2 ? :light_white : :white
+    row.even? == col.even? ? :light_white : :white
   end
 
   def stalemate?
