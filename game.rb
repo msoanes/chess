@@ -4,7 +4,7 @@ require 'yaml'
 
 class Game
   SAVE_FILE = 'chess_save.yml'
-  SPECIALS = [:save, :quit]
+  SPECIALS = [:save, :quit, :castle]
 
   def initialize(player_one, player_two)
     @board = Board.new
@@ -21,8 +21,8 @@ class Game
         @board.render
         display_info
         action = @mover.get_move
-        if SPECIALS.include?(action)
-          send(action)
+        if SPECIALS.include?(action[0])
+          send(*action)
         elsif valid_coords?(action)
           @board.move(*action)
           switch_player
@@ -37,6 +37,9 @@ class Game
 
 
   private
+  def castle(side)
+    @board.castle(side == :kingside)
+  end
 
   def display_info
     puts "Black in check" if @board.in_check?(:black)
@@ -70,7 +73,7 @@ class Game
   end
 
   def valid_coords?(coords)
-    if !coords.is_a?(Array)
+    if !coords.is_a?(Array) # Fix this
       raise InvalidInputError.new("Follow the coordinate example, please")
     elsif !@board.occupied?(coords.first)
       raise InvalidInputError.new("Must select a piece at starting position.")
