@@ -25,11 +25,7 @@ class Piece
   end
 
   def valid_moves
-    moves.reject do |move|
-      new_board = @board.deep_dup
-      new_board.set_piece_at(@pos, move)
-      new_board.in_check?(@color)
-    end
+    moves.reject { |move| @board.move_to_check?(@pos, move, @color) }
   end
 
 
