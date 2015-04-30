@@ -9,6 +9,9 @@ class SlidingPiece < Piece
     moves_array
   end
 
+
+  private
+
   def slide(dir)
     moves_array = []
     new_position = single_step(@pos, dir)
@@ -25,31 +28,40 @@ class SlidingPiece < Piece
 end
 
 class Queen < SlidingPiece
-  def move_dirs
-    STRAIGHT + DIAGONAL
+  def symbol
+    '♛ '
   end
 
-  def symbol
-    'Q'
+
+  private
+
+  def move_dirs
+    STRAIGHT + DIAGONAL
   end
 end
 
 class Bishop < SlidingPiece
-  def move_dirs
-    DIAGONAL
+  def symbol
+    '♝ '
   end
 
-  def symbol
-    'B'
+
+  private
+
+  def move_dirs
+    DIAGONAL
   end
 end
 
 class Rook < SlidingPiece
-  def move_dirs
-    STRAIGHT
+  def symbol
+    '♜ '
   end
 
-  def symbol
-    'R'
+
+  private
+
+  def move_dirs
+    STRAIGHT
   end
 end

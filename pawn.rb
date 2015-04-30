@@ -12,15 +12,19 @@ class Pawn < Piece
     moves_array + diagonal.select { |move| valid_diagonal?(move) }
   end
 
+
+  private
+
+  def symbol
+    '♟ '
+  end
+  
+  def valid_diagonal?(move)
+    @board.occupied?(move) && @board.color_at(move) != @color
+  end
+
   def valid_straight?(move)
     !@board.occupied?(move)
   end
 
-  def valid_diagonal?(move)
-    @board.occupied?(move) && @board.piece_at(move).color != @color
-  end
-
-  def symbol
-    'P'
-  end
 end

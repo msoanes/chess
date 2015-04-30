@@ -21,21 +21,27 @@ class Knight < SteppingPiece
           [-2, 1],
           [-2, -1]]
 
-  def hops
-    HOPS
+  def symbol
+    '♞ '
   end
 
-  def symbol
-    'N'
+
+  private
+
+  def hops
+    HOPS
   end
 end
 
 class King < SteppingPiece
-  def hops
-    STRAIGHT + DIAGONAL
+  def symbol
+    '♚ '
   end
 
-  def symbol
-    'K'
+
+  private
+
+  def hops
+    STRAIGHT + DIAGONAL
   end
 end
